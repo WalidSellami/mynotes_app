@@ -182,8 +182,8 @@ class _NotesScreenState extends State<NotesScreen> {
                 if(cubit.isSelected &&
                     cubit.selectNotes.values.any((element) => element == true) &&
                     cubit.notes.isNotEmpty) ...[
-                  FadeIn(
-                    duration: const Duration(milliseconds: 300),
+                  ZoomIn(
+                    duration: const Duration(milliseconds: 500),
                     child: IconButton(
                       onPressed: () {
                         cubit.moveAllSelectedNotesToRecycleBin(selectNotes: cubit.selectNotes);

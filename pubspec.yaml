@@ -51,7 +51,7 @@ dependencies:
   path_provider: ^2.1.1
   open_filex: ^4.3.4
 
-  flutter_launcher_icons: "^0.13.1"
+  flutter_launcher_icons: ^0.14.1
 
 flutter_launcher_icons:
   android: true
@@ -69,7 +69,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -86,7 +86,7 @@ flutter:
   assets:
     - assets/images/note.png
     - assets/fonts/VarelaRound-Regular.ttf
-    - assets/fonts/Alexandria-Regular.ttf
+    - assets/fonts/IBMPlexSansArabic-Regular.ttf
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -111,9 +111,9 @@ flutter:
         - asset: assets/fonts/JosefinSans-Regular.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-    - family: Alexandria
+    - family: IBMPlexSansArabic
       fonts:
-        - asset: assets/fonts/Alexandria-Regular.ttf
+        - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

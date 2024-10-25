@@ -1,17 +1,13 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:animate_do/animate_do.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:notes/shared/components/Components.dart';
 import 'package:notes/shared/components/extentions.dart';
 import 'package:notes/shared/cubit/AppCubit.dart';
 import 'package:notes/shared/cubit/AppStates.dart';
-import 'package:notes/shared/pdf/Pdf.dart';
 import 'package:notes/shared/styles/Colors.dart';
 
 class EditNoteScreen extends StatefulWidget {
@@ -36,30 +32,30 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
 
   GlobalKey globalKey = GlobalKey();
 
-  Future<File> generatePdfInBackground({
-    required String title,
-    required String content,
-    required List<dynamic> imagePaths,
-    required bool isArabicTitle,
-    required bool isArabicContent,
-  }) async {
-
-    final fontData1 = await rootBundle.load('assets/fonts/VarelaRound-Regular.ttf');
-    final fontData2 = await rootBundle.load('assets/fonts/Alexandria-Regular.ttf');
-
-    final RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
-    final Completer<File> completer = Completer();
-
-    await compute(generateDoc, [title, content, imagePaths,
-      rootIsolateToken, fontData1, fontData2,
-      isArabicTitle, isArabicContent]).then((value) {
-       completer.complete(value);
-       }).catchError((error) {
-       completer.completeError(error);
-     });
-
-    return completer.future;
-  }
+  // Future<File> generatePdfInBackground({
+  //   required String title,
+  //   required String content,
+  //   required List<dynamic> imagePaths,
+  //   required bool isArabicTitle,
+  //   required bool isArabicContent,
+  // }) async {
+  //
+  //   final fontData1 = await rootBundle.load('assets/fonts/VarelaRound-Regular.ttf');
+  //   final fontData2 = await rootBundle.load('assets/fonts/IBMPlexSansArabic-Regular.ttf');
+  //
+  //   final RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
+  //   final Completer<File> completer = Completer();
+  //
+  //   await compute(generateDoc, [title, content, imagePaths,
+  //     rootIsolateToken, fontData1, fontData2,
+  //     isArabicTitle, isArabicContent]).then((value) {
+  //      completer.complete(value);
+  //      }).catchError((error) {
+  //      completer.completeError(error);
+  //    });
+  //
+  //   return completer.future;
+  // }
 
 
   @override
@@ -69,11 +65,11 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
     contentController.addListener(() {setState(() {});});
     titleController.text = widget.note['title'];
     contentController.text = widget.note['content'];
-    Future.delayed(const Duration(milliseconds: 300)).then((value) {
-      if(!mounted) return;
-      AppCubit.get(context).detectLangText(true, titleController.text);
-      AppCubit.get(context).detectLangText(false, contentController.text);
-    });
+    // Future.delayed(const Duration(milliseconds: 300)).then((value) {
+    //   if(!mounted) return;
+    //   AppCubit.get(context).detectLangText(true, titleController.text);
+    //   AppCubit.get(context).detectLangText(false, contentController.text);
+    // });
   }
 
   @override
@@ -209,51 +205,55 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                         tooltip: 'Add Image',
                       ),
                     ),
-                  if(cubit.imagePaths.isEmpty)
-                  FadeInRight(
-                    duration: const Duration(milliseconds: 300),
-                    child: IconButton(
-                        onPressed: () async {
-                          focusNode1.unfocus();
-                          focusNode2.unfocus();
-                          showLoading(context, isDarkTheme);
-                          await generatePdfInBackground(
-                              title: titleController.text,
-                              content: contentController.text,
-                              imagePaths: cubit.dataImg,
-                              isArabicTitle: cubit.isArabicTitle,
-                              isArabicContent: cubit.isArabicContent,
-                          ).then((value) async {
-                               await Future.delayed(const Duration(milliseconds: 300)).then((v) async {
-                                 if(context.mounted) {
-                                   Navigator.pop(context);
-                                   await openFile(value);
-                                 }
-                               });
-                          }).catchError((error) {
-                            if(context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    backgroundColor: redColor,
-                                    content: Text(error.toString(),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    duration: const Duration(seconds: 2),
-                                  ));
-                            }
-                          });
-                        },
-                        icon: Icon(
-                          Icons.picture_as_pdf_rounded,
-                          color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
-                          size: 30.0,
-                        ),
-                      tooltip: 'PDF',
-                    ),
-                  ),
+                  // if(cubit.imagePaths.isEmpty)
+                  // FadeInRight(
+                  //   duration: const Duration(milliseconds: 300),
+                  //   child: IconButton(
+                  //       onPressed: () async {
+                  //         focusNode1.unfocus();
+                  //         focusNode2.unfocus();
+                  //         showLoading(context, isDarkTheme);
+                  //         await generatePdfInBackground(
+                  //             title: titleController.text,
+                  //             content: contentController.text,
+                  //             imagePaths: cubit.dataImg,
+                  //             isArabicTitle: cubit.isArabicTitle,
+                  //             isArabicContent: cubit.isArabicContent,
+                  //         ).then((value) async {
+                  //              await Future.delayed(const Duration(milliseconds: 300)).then((v) async {
+                  //                if(context.mounted) {
+                  //                  Navigator.pop(context);
+                  //                  await openFile(value);
+                  //                }
+                  //              });
+                  //         }).catchError((error) {
+                  //           if(context.mounted) {
+                  //             if (kDebugMode) {
+                  //               print(error.toString());
+                  //             }
+                  //             Navigator.pop(context);
+                  //             ScaffoldMessenger.of(context).showSnackBar(
+                  //                 SnackBar(
+                  //                   backgroundColor: redColor,
+                  //                   content: Text(error.toString(),
+                  //                     style: const TextStyle(
+                  //                       color: Colors.white,
+                  //                       fontWeight: FontWeight.bold,
+                  //                     ),
+                  //                   ),
+                  //                   duration: const Duration(seconds: 3),
+                  //                 ));
+                  //           }
+                  //         });
+                  //       },
+                  //       icon: Icon(
+                  //         Icons.picture_as_pdf_rounded,
+                  //         color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
+                  //         size: 30.0,
+                  //       ),
+                  //     tooltip: 'PDF',
+                  //   ),
+                  // ),
                   8.0.hrSpace,
                 ],
               ),
@@ -271,11 +271,11 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                             controller: titleController,
                             focusNode: focusNode1,
                             hintText: 'Title',
-                            onChanged: (value) {
-                              if(value.isNotEmpty) {
-                                cubit.detectLangText(true, value);
-                              }
-                            },
+                            // onChanged: (value) {
+                            //   if(value.isNotEmpty) {
+                            //     cubit.detectLangText(true, value);
+                            //   }
+                            // },
                             onPress: () {
                               FocusScope.of(context).requestFocus(focusNode2);
                             },
@@ -285,11 +285,11 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                           controller: contentController,
                           focusNode: focusNode2,
                           hintText: 'Content',
-                          onChanged: (value) {
-                            if(value.isNotEmpty) {
-                              cubit.detectLangText(false, value);
-                            }
-                          },
+                          // onChanged: (value) {
+                          //   if(value.isNotEmpty) {
+                          //     cubit.detectLangText(false, value);
+                          //   }
+                          // },
                           isTitle: false,
                         ),
                        40.0.vrSpace,
@@ -304,7 +304,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                               ),
                             ),
                           ),
-                       12.0.vrSpace,
+                        12.0.vrSpace,
                         if(cubit.dataImg.isNotEmpty)
                           GridView.builder(
                             shrinkWrap: true,
@@ -337,7 +337,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                               Icons.keyboard_arrow_down_rounded,
                               color: isDarkTheme ? Colors.white : Colors.black,
                             ),
-                           12.0.vrSpace,
+                            12.0.vrSpace,
                           ],
                           GridView.builder(
                             shrinkWrap: true,

@@ -130,7 +130,7 @@ Widget buildItemNote(note, selectNote, isDarkTheme, context) => FadeIn(
         }
       },
       onLongPress: () {
-        if(!selectNote[note['id']]) {
+        if(!selectNote[note['id']] && !AppCubit.get(context).isSelected) {
           HapticFeedback.vibrate();
           AppCubit.get(context).selectNote(id: note['id']);
         }
@@ -187,27 +187,21 @@ Widget buildItemNote(note, selectNote, isDarkTheme, context) => FadeIn(
                     ),
                   ),
                   if(selectNote[note['id']] && AppCubit.get(context).isSelected)
-                    FadeIn(
-                      duration: const Duration(milliseconds: 200),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                          EvaIcons.checkmarkCircle2Outline,
-                          size: 28.0,
-                          color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Icon(
+                        EvaIcons.checkmarkCircle2Outline,
+                        size: 28.0,
+                        color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
                       ),
                     ),
                   if(!selectNote[note['id']] && AppCubit.get(context).isSelected)
-                    FadeIn(
-                      duration: const Duration(milliseconds: 200),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(
-                          EvaIcons.radioButtonOffOutline,
-                          size: 28.0,
-                          color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Icon(
+                        EvaIcons.radioButtonOffOutline,
+                        size: 28.0,
+                        color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
                       ),
                     ),
                 ],
@@ -266,7 +260,7 @@ Widget buildItemNoteDeleted(note, selectNoteDeleted, isDarkTheme, context) => Fa
         }
       },
       onLongPress: () {
-        if(!selectNoteDeleted[note['id']]) {
+        if(!selectNoteDeleted[note['id']] && !AppCubit.get(context).isSelected) {
           HapticFeedback.vibrate();
           AppCubit.get(context).selectNote(id: note['id'], isDeleted: true);
         }
@@ -351,27 +345,21 @@ Widget buildItemNoteDeleted(note, selectNoteDeleted, isDarkTheme, context) => Fa
                         ),
                       ),
                       if(selectNoteDeleted[note['id']] && AppCubit.get(context).isSelected)
-                        FadeIn(
-                          duration: const Duration(milliseconds: 200),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Icon(
-                              EvaIcons.checkmarkCircle2Outline,
-                              size: 28.0,
-                              color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Icon(
+                            EvaIcons.checkmarkCircle2Outline,
+                            size: 28.0,
+                            color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
                           ),
                         ),
                       if(!selectNoteDeleted[note['id']] && AppCubit.get(context).isSelected)
-                        FadeIn(
-                          duration: const Duration(milliseconds: 200),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Icon(
-                              EvaIcons.radioButtonOffOutline,
-                              size: 28.0,
-                              color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Icon(
+                            EvaIcons.radioButtonOffOutline,
+                            size: 28.0,
+                            color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
                           ),
                         ),
                     ],
@@ -424,9 +412,10 @@ Widget buildItemImageNote(id, globalKey, dynamic image, isDarkTheme, context, {b
     },
   child: Container(
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(22.0),
+      borderRadius: BorderRadius.circular(20.0),
       border: Border.all(
         width: 1.0,
+        strokeAlign: BorderSide.strokeAlignOutside,
         color: isDarkTheme ? Colors.white : Colors.black,
       ),
     ),
@@ -531,7 +520,9 @@ Widget defaultTextFormField({
         border: (isTitle == false) ? InputBorder.none : null,
       ),
       onChanged: (v) {
-        onChanged!(v);
+        if(v.isNotEmpty) {
+          onChanged!(v);
+        }
       },
       onEditingComplete: () {
         onPress!();
@@ -618,9 +609,10 @@ Widget buildItemImagePicked(AppCubit cubit, File imagePicked, index, isDarkTheme
       children: [
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22.0),
+            borderRadius: BorderRadius.circular(20.0),
             border: Border.all(
               width: 1.0,
+              strokeAlign: BorderSide.strokeAlignOutside,
               color: isDarkTheme ? Colors.white : Colors.black,
             ),
           ),
@@ -665,24 +657,26 @@ Widget buildItemImagePicked(AppCubit cubit, File imagePicked, index, isDarkTheme
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 6.0,
-          ),
-          child: Material(
-            elevation: 4.0,
-            clipBehavior: Clip.antiAlias,
-            borderRadius: BorderRadius.circular(20.0),
-            color: isDarkTheme ? Colors.blueGrey : Colors.blueGrey.shade100,
-            child: InkWell(
-              onTap: () {
-                cubit.clearImage(index);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.close_rounded,
-                  color: isDarkTheme ? Colors.white : Colors.black,
+        ZoomIn(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 6.0,
+            ),
+            child: Material(
+              elevation: 4.0,
+              clipBehavior: Clip.antiAlias,
+              borderRadius: BorderRadius.circular(20.0),
+              color: isDarkTheme ? Colors.blueGrey : Colors.blueGrey.shade100,
+              child: InkWell(
+                onTap: () {
+                  cubit.clearImage(index);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.close_rounded,
+                    color: isDarkTheme ? Colors.white : Colors.black,
+                  ),
                 ),
               ),
             ),

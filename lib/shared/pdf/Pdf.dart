@@ -26,34 +26,39 @@ Future<File> generateDoc(List<dynamic> args) async {
   bool isArabicContent = args[7];
 
   pdf.addPage(pw.MultiPage(
-    maxPages: 50,
+    maxPages: 10000,
       build: (context) => [
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
             pw.Text(
                 title,
                 textDirection: isArabicTitle ? pw.TextDirection.rtl : pw.TextDirection.ltr,
                 style: pw.TextStyle(
-                    fontSize: 30.0,
-                    letterSpacing: 0.6,
-                    fontWeight: pw.FontWeight.bold,
-                    font: isArabicTitle ? customFont2 : customFont1,
+                  fontSize: 26.0,
+                  letterSpacing: 0.6,
+                  fontWeight: pw.FontWeight.bold,
+                  font: isArabicTitle ? customFont2 : customFont1,
                 )),
             pw.SizedBox(
               height: 20.0,
             ),
-            pw.Text(
-                content,
-                textDirection: isArabicContent ? pw.TextDirection.rtl : pw.TextDirection.ltr,
-                style: pw.TextStyle(
-                    fontSize: 22.0,
-                    letterSpacing: 0.8,
-                    height: 2.2,
-                    fontWeight: pw.FontWeight.bold,
-                    font: isArabicContent ? customFont2 : customFont1,
-                )),
-            pw.SizedBox(
-              height: 40.0,
-            ),
+            ...splitTextIntoChunks(content, 700) // Split long text into chunks
+                .map((chunk) => pw.Text(
+              chunk,
+              textDirection: isArabicContent ? pw.TextDirection.rtl : pw.TextDirection.ltr,
+              style: pw.TextStyle(
+                fontSize: 18.0,
+                letterSpacing: 0.8,
+                height: 2.2,
+                fontWeight: pw.FontWeight.bold,
+                font: isArabicContent ? customFont2 : customFont1,
+              ),
+            )),
             if (imagePaths.isNotEmpty) ...[
+              pw.SizedBox(
+                height: 40.0,
+              ),
               pw.Wrap(
                 direction: pw.Axis.horizontal,
                 children: imagePaths
@@ -63,9 +68,23 @@ Future<File> generateDoc(List<dynamic> args) async {
                 runSpacing: 30.0, // Spacing between rows
               ),
             ],
-          ]));
+          ]
+        ),
+      ]));
 
   return saveDocument(name: '${title}_Note.pdf', pdf: pdf);
+}
+
+
+List<String> splitTextIntoChunks(String text, int chunkSize) {
+  List<String> chunks = [];
+
+  for (int i = 0; i < text.length; i += chunkSize) {
+    int end = (i + chunkSize < text.length) ? i + chunkSize : text.length;
+    chunks.add(text.substring(i, end));
+  }
+
+  return chunks;
 }
 
 
@@ -80,7 +99,7 @@ pw.Widget buildItemImage(String imagePath) {
     child: pw.Image(
       pw.MemoryImage((File(imagePath).readAsBytesSync()).buffer.asUint8List()),
       width: 200,
-      height: 300.0,
+      height: 300,
       fit: pw.BoxFit.contain,
     ),
   );

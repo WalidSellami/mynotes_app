@@ -116,7 +116,7 @@ class AppCubit extends Cubit<AppStates> {
 
       if(pickedFile != null) {
 
-        if(File(pickedFile.path).lengthSync() <= 10485760) {
+        if(File(pickedFile.path).lengthSync() <= 10485760) {  //10mb
 
           final appDir = await getApplicationDocumentsDirectory();
           final newPath = '${appDir.path}/${pickedFile.name}';

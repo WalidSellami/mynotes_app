@@ -33,7 +33,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     titleController.addListener(() {setState(() {});});
     contentController.addListener(() {setState(() {});});
 
-    Future.delayed(const Duration(milliseconds: 800)).then((value) {
+    Future.delayed(const Duration(milliseconds: 600)).then((value) {
       if(!mounted) return;
       FocusScope.of(context).requestFocus(focusNode1);
     });
