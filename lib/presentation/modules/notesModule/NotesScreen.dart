@@ -8,10 +8,11 @@ import 'package:notes/presentation/modules/notesModule/AddNoteScreen.dart';
 import 'package:notes/presentation/modules/notesModule/DeletedNotesScreen.dart';
 import 'package:notes/presentation/modules/notesModule/SearchNoteScreen.dart';
 import 'package:notes/shared/components/Components.dart';
-import 'package:notes/shared/components/Extentions.dart';
+import 'package:notes/shared/utils/Extensions.dart';
 import 'package:notes/shared/cubit/AppCubit.dart';
 import 'package:notes/shared/cubit/AppStates.dart';
 import 'package:notes/shared/styles/Colors.dart';
+import 'package:notes/shared/utils/Helpers.dart';
 
 class NotesScreen extends StatefulWidget {
   const NotesScreen({super.key});
@@ -42,17 +43,15 @@ class _NotesScreenState extends State<NotesScreen> {
 
           if(!state.isEmptyNote) {
 
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: isDarkTheme ? darkPrimaryColor : lightPrimaryColor,
-                  content: const Text('Note Edited',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  duration: const Duration(milliseconds: 850),
-                ));
+            Future.delayed(Duration(milliseconds: 300)).then((value) {
+              if(context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    snackBar(
+                        context: context,
+                        title: 'Note Edited',
+                        isDarkTheme: isDarkTheme));
+              }
+            });
           }
 
         }
@@ -68,17 +67,18 @@ class _NotesScreenState extends State<NotesScreen> {
             }
           });
 
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: isDarkTheme ? darkPrimaryColor : lightPrimaryColor,
-                content: const Text('Note Moved To Recycle Bin',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                duration: const Duration(seconds: 1),
-              ));
+          Future.delayed(Duration(milliseconds: 300)).then((value) {
+            if(context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  snackBar(
+                    context: context,
+                    title: 'Note Moved To Recycle Bin',
+                    isDarkTheme: isDarkTheme,
+                    duration: 1000,
+                  ));
+            }
+          });
+
 
         }
 
@@ -87,18 +87,17 @@ class _NotesScreenState extends State<NotesScreen> {
 
           cubit.getFromDataBase(cubit.dataBase, context);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: isDarkTheme ? darkPrimaryColor : lightPrimaryColor,
-                content: const Text('All Notes Selected Moved To Recycle Bin',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                duration: const Duration(seconds: 1),
-              ));
-
+          Future.delayed(Duration(milliseconds: 300)).then((value) {
+            if(context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  snackBar(
+                    context: context,
+                    title: 'All Notes Selected Moved To Recycle Bin',
+                    isDarkTheme: isDarkTheme,
+                    duration: 1000,
+                  ));
+            }
+          });
         }
 
 
@@ -110,19 +109,18 @@ class _NotesScreenState extends State<NotesScreen> {
 
             cubit.getFromDataBase(cubit.dataBase, context);
 
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: isDarkTheme ? darkPrimaryColor : lightPrimaryColor,
-                  content: const Text('Note Empty Discarded',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  duration: const Duration(seconds: 1),
-                ));
+            Future.delayed(Duration(milliseconds: 300)).then((value) {
+              if(context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    snackBar(
+                      context: context,
+                      title: 'Note Empty Discarded',
+                      isDarkTheme: isDarkTheme,
+                      duration: 1000,
+                    ));
+              }
+            });
           }
-
         }
 
       },
@@ -141,12 +139,13 @@ class _NotesScreenState extends State<NotesScreen> {
             appBar: AppBar(
               title: FadeIn(
                 duration: const Duration(milliseconds: 300),
-                child: const Text(
-                  'My-Notes',
+                child: Text(
+                  getGreeting(context),
                   style: TextStyle(
-                    fontFamily: 'Josefin',
+                    // fontFamily: 'Comfortaa',
+                    fontWeight: FontWeight.bold,
                     letterSpacing: 0.6,
-                    fontSize: 22.0,
+                    fontSize: 21.0,
                   ),
                 ),
               ),

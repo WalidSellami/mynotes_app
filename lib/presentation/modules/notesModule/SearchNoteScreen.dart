@@ -4,10 +4,11 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/shared/components/Components.dart';
-import 'package:notes/shared/components/extentions.dart';
 import 'package:notes/shared/cubit/AppCubit.dart';
 import 'package:notes/shared/cubit/AppStates.dart';
 import 'package:notes/shared/styles/Colors.dart';
+import 'package:notes/shared/utils/Extensions.dart';
+import 'package:notes/shared/utils/Helpers.dart';
 
 class SearchNoteScreen extends StatefulWidget {
   const SearchNoteScreen({super.key});
@@ -29,9 +30,11 @@ class _SearchNoteScreenState extends State<SearchNoteScreen> {
       setState(() {});
     });
 
-    Future.delayed(const Duration(milliseconds: 700)).then((value) {
-      if(!mounted) return;
-      FocusScope.of(context).requestFocus(focusNode);
+    Future.delayed(const Duration(milliseconds: 500)).then((value) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if(!mounted) return;
+        FocusScope.of(context).requestFocus(focusNode);
+      });
     });
 
   }
@@ -132,6 +135,7 @@ class _SearchNoteScreenState extends State<SearchNoteScreen> {
                           letterSpacing: 0.6,
                           fontWeight: FontWeight.bold,
                         ),
+                        textDirection: getTextDirection(searchController.text),
                         decoration: InputDecoration(
                           hintText: 'Title note ...',
                           hintStyle: const TextStyle(

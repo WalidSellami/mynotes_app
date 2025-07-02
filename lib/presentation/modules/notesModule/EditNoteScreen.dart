@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:notes/shared/components/Components.dart';
-import 'package:notes/shared/components/extentions.dart';
 import 'package:notes/shared/cubit/AppCubit.dart';
 import 'package:notes/shared/cubit/AppStates.dart';
 import 'package:notes/shared/styles/Colors.dart';
+import 'package:notes/shared/utils/Extensions.dart';
+import 'package:notes/shared/utils/Helpers.dart';
 
 class EditNoteScreen extends StatefulWidget {
 
@@ -98,7 +99,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
 
         if(state is SuccessGetImageAppState) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Future.delayed(const Duration(milliseconds: 300)).then((value) {
+            Future.delayed(const Duration(milliseconds: 700)).then((value) {
               scrollToBottom(scrollController);
             });
           });
@@ -112,16 +113,13 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
             Future.delayed(const Duration(milliseconds: 300)).then((value) {
               if(context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: redColor,
-                      content: const Text('Image is bigger than 10MB',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      duration: const Duration(seconds: 1),
-                    ));
+                  snackBar(
+                      context: context,
+                      title: 'Image is bigger than 10MB',
+                      isDarkTheme: isDarkTheme,
+                      duration: 1000,
+                      bgColor: redColor,
+                  ));
               }
             });
 
@@ -131,16 +129,13 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
             Future.delayed(const Duration(milliseconds: 300)).then((value) {
               if(context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: redColor,
-                      content: Text(state.error.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      duration: const Duration(seconds: 2),
-                    ));
+                  snackBar(
+                      context: context,
+                      title: 'Error, please try again!',
+                      isDarkTheme: isDarkTheme,
+                      duration: 1000,
+                      bgColor: redColor,
+                  ));
               }
             });
           }
@@ -166,7 +161,6 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
         return PopScope(
           onPopInvokedWithResult: (v, _) {
             editNote(cubit);
-            cubit.clearDetectLang();
           },
           child: GestureDetector(
             onHorizontalDragEnd: (details) {
@@ -188,7 +182,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                   if(titleController.text.isNotEmpty &&
                       titleController.text.trim().isNotEmpty &&
                       (cubit.dataImg.length + cubit.imagePaths.length) < 5)
-                    FadeInRight(
+                    FadeIn(
                       duration: const Duration(milliseconds: 300),
                       child: IconButton(
                         onPressed: () {
@@ -205,55 +199,6 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                         tooltip: 'Add Image',
                       ),
                     ),
-                  // if(cubit.imagePaths.isEmpty)
-                  // FadeInRight(
-                  //   duration: const Duration(milliseconds: 300),
-                  //   child: IconButton(
-                  //       onPressed: () async {
-                  //         focusNode1.unfocus();
-                  //         focusNode2.unfocus();
-                  //         showLoading(context, isDarkTheme);
-                  //         await generatePdfInBackground(
-                  //             title: titleController.text,
-                  //             content: contentController.text,
-                  //             imagePaths: cubit.dataImg,
-                  //             isArabicTitle: cubit.isArabicTitle,
-                  //             isArabicContent: cubit.isArabicContent,
-                  //         ).then((value) async {
-                  //              await Future.delayed(const Duration(milliseconds: 300)).then((v) async {
-                  //                if(context.mounted) {
-                  //                  Navigator.pop(context);
-                  //                  await openFile(value);
-                  //                }
-                  //              });
-                  //         }).catchError((error) {
-                  //           if(context.mounted) {
-                  //             if (kDebugMode) {
-                  //               print(error.toString());
-                  //             }
-                  //             Navigator.pop(context);
-                  //             ScaffoldMessenger.of(context).showSnackBar(
-                  //                 SnackBar(
-                  //                   backgroundColor: redColor,
-                  //                   content: Text(error.toString(),
-                  //                     style: const TextStyle(
-                  //                       color: Colors.white,
-                  //                       fontWeight: FontWeight.bold,
-                  //                     ),
-                  //                   ),
-                  //                   duration: const Duration(seconds: 3),
-                  //                 ));
-                  //           }
-                  //         });
-                  //       },
-                  //       icon: Icon(
-                  //         Icons.picture_as_pdf_rounded,
-                  //         color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
-                  //         size: 30.0,
-                  //       ),
-                  //     tooltip: 'PDF',
-                  //   ),
-                  // ),
                   8.0.hrSpace,
                 ],
               ),
@@ -261,21 +206,16 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                 controller: scrollController,
                 clipBehavior: Clip.antiAlias,
                 physics: const BouncingScrollPhysics(),
-                child: FadeInRight(
-                  duration: const Duration(milliseconds: 500),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: FadeInRight(
+                    duration: const Duration(milliseconds: 500),
                     child: Column(
                       children: [
                         defaultTextFormField(
                             controller: titleController,
                             focusNode: focusNode1,
                             hintText: 'Title',
-                            // onChanged: (value) {
-                            //   if(value.isNotEmpty) {
-                            //     cubit.detectLangText(true, value);
-                            //   }
-                            // },
                             onPress: () {
                               FocusScope.of(context).requestFocus(focusNode2);
                             },
@@ -285,11 +225,6 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                           controller: contentController,
                           focusNode: focusNode2,
                           hintText: 'Content',
-                          // onChanged: (value) {
-                          //   if(value.isNotEmpty) {
-                          //     cubit.detectLangText(false, value);
-                          //   }
-                          // },
                           isTitle: false,
                         ),
                        40.0.vrSpace,
@@ -306,19 +241,22 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                           ),
                         12.0.vrSpace,
                         if(cubit.dataImg.isNotEmpty)
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            clipBehavior: Clip.antiAlias,
-                            padding: const EdgeInsets.all(10.0),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 1,
-                              childAspectRatio: 1 / 0.9,
-                              mainAxisSpacing: 30.0,
+                          ZoomIn(
+                            duration: Duration(milliseconds: 500),
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              clipBehavior: Clip.antiAlias,
+                              padding: const EdgeInsets.all(10.0),
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 1,
+                                childAspectRatio: 1 / 0.9,
+                                mainAxisSpacing: 30.0,
+                              ),
+                              itemBuilder: (context, index) => buildItemImageNote(cubit.dataImg[index]['id'],
+                                  globalKey, cubit.dataImg[index]['image'], isDarkTheme, context),
+                              itemCount: cubit.dataImg.length,
                             ),
-                            itemBuilder: (context, index) => buildItemImageNote(cubit.dataImg[index]['id'],
-                                globalKey, cubit.dataImg[index]['image'], isDarkTheme, context),
-                            itemCount: cubit.dataImg.length,
                           ),
                         16.0.vrSpace,
                         if(cubit.imagePaths.isNotEmpty) ...[
@@ -333,23 +271,54 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                                 ),
                               ),
                             ),
-                            Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: isDarkTheme ? Colors.white : Colors.black,
+                            FadeIn(
+                              duration: Duration(milliseconds: 200),
+                              child: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: isDarkTheme ? Colors.white : Colors.black,
+                              ),
                             ),
                             12.0.vrSpace,
                           ],
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            clipBehavior: Clip.antiAlias,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 1,
-                              childAspectRatio: 1 / 0.85,
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            switchInCurve: Curves.easeInOut,
+                            switchOutCurve: Curves.easeInOut,
+                            transitionBuilder: (Widget child, Animation<double> animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: const Offset(0.0, 0.1), // from bottom slightly
+                                    end: Offset.zero,
+                                  ).animate(CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeOutCubic,
+                                  )),
+                                  child: ScaleTransition(
+                                    scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                                        CurvedAnimation(
+                                          parent: animation,
+                                          curve: Curves.easeOut,
+                                        )),
+                                    child: child,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: GridView.builder(
+                              key: ValueKey<int>(cubit.imagePaths.length),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              clipBehavior: Clip.antiAlias,
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 1,
+                                childAspectRatio: 1 / 0.85,
+                              ),
+                              itemBuilder: (context, index) => buildItemImagePicked(
+                                  cubit, cubit.imagePaths[index], index, isDarkTheme, context),
+                              itemCount: cubit.imagePaths.length,
                             ),
-                            itemBuilder: (context, index) => buildItemImagePicked(
-                                cubit, cubit.imagePaths[index], index, isDarkTheme, context),
-                            itemCount: cubit.imagePaths.length,
                           ),
                         ],
                       ],
@@ -365,7 +334,8 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
   }
 
   void editNote(AppCubit cubit) {
-      if((titleController.text != widget.note['title'])
+      if((titleController.text.isNotEmpty &&
+          titleController.text != widget.note['title'])
           || (contentController.text != widget.note['content'])
           || (cubit.imagePaths.isNotEmpty)) {
         cubit.updateIntoDataBase(

@@ -3,10 +3,10 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/shared/components/Components.dart';
-import 'package:notes/shared/components/extentions.dart';
 import 'package:notes/shared/cubit/AppCubit.dart';
 import 'package:notes/shared/cubit/AppStates.dart';
 import 'package:notes/shared/styles/Colors.dart';
+import 'package:notes/shared/utils/Extensions.dart';
 
 class DeletedNotesScreen extends StatefulWidget {
   const DeletedNotesScreen({super.key});
@@ -40,16 +40,11 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: isDarkTheme ? darkPrimaryColor : lightPrimaryColor,
-                content: const Text('Note Restored',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                duration: const Duration(milliseconds: 850),
-              ));
+            snackBar(
+                context: context,
+                title: 'Note Restored',
+                isDarkTheme: isDarkTheme,
+            ));
         }
 
         if(state is SuccessRestoreAllNotesFromRecycleBinAppState) {
@@ -57,16 +52,11 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
           cubit.getFromDataBase(cubit.dataBase, context);
 
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: isDarkTheme ? darkPrimaryColor : lightPrimaryColor,
-                content: const Text('All Notes Restored',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                duration: const Duration(milliseconds: 850),
-              ));
+            snackBar(
+              context: context,
+              title: 'All Notes Restored',
+              isDarkTheme: isDarkTheme,
+            ));
 
         }
 
@@ -81,16 +71,11 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: isDarkTheme ? darkPrimaryColor : lightPrimaryColor,
-                content: const Text('Note Deleted',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                duration: const Duration(milliseconds: 850),
-              ));
+            snackBar(
+              context: context,
+              title: 'Note Deleted',
+              isDarkTheme: isDarkTheme,
+            ));
 
         }
 
@@ -99,16 +84,11 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
           cubit.getFromDataBase(cubit.dataBase, context);
 
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: isDarkTheme ? darkPrimaryColor : lightPrimaryColor,
-                content: const Text('All Notes Deleted',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                duration: const Duration(milliseconds: 850),
-              ));
+            snackBar(
+              context: context,
+              title: 'All Notes Deleted',
+              isDarkTheme: isDarkTheme,
+            ));
         }
       },
       builder: (context , state) {
@@ -129,8 +109,9 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
               },
               title: 'Recycle Bin',
               actions: [
-                if(cubit.isSelected && cubit.selectNotesDeleted.values.any((element) => element == true)) ...[
-                  FadeInRight(
+                if(cubit.isSelected && cubit.selectNotesDeleted.
+                values.any((element) => (element == true))) ...[
+                  FadeIn(
                     duration: const Duration(milliseconds: 300),
                     child: IconButton(
                       onPressed: () {
@@ -138,14 +119,14 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
                             selectNotesDel: cubit.selectNotesDeleted, context: context);
                       },
                       icon: Icon(
-                        Icons.replay,
+                        Icons.restore_rounded,
                         color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
                         size: 30.0,
                       ),
                       tooltip: 'Restore',
                     ),
                   ),
-                  FadeInRight(
+                  FadeIn(
                     duration: const Duration(milliseconds: 300),
                     child: IconButton(
                       onPressed: () {

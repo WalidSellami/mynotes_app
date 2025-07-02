@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:notes/shared/components/Components.dart';
-import 'package:notes/shared/components/extentions.dart';
 import 'package:notes/shared/cubit/AppCubit.dart';
 import 'package:notes/shared/cubit/AppStates.dart';
 import 'package:notes/shared/styles/Colors.dart';
+import 'package:notes/shared/utils/Extensions.dart';
+import 'package:notes/shared/utils/Helpers.dart';
 
 class AddNoteScreen extends StatefulWidget {
   const AddNoteScreen({super.key});
@@ -33,9 +34,11 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     titleController.addListener(() {setState(() {});});
     contentController.addListener(() {setState(() {});});
 
-    Future.delayed(const Duration(milliseconds: 600)).then((value) {
-      if(!mounted) return;
-      FocusScope.of(context).requestFocus(focusNode1);
+    Future.delayed(const Duration(milliseconds: 500)).then((value) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if(!mounted) return;
+        FocusScope.of(context).requestFocus(focusNode1);
+      });
     });
 
   }
@@ -67,7 +70,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
 
         if(state is SuccessGetImageAppState) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-              Future.delayed(const Duration(milliseconds: 300)).then((value) {
+              Future.delayed(const Duration(milliseconds: 700)).then((value) {
                 scrollToBottom(scrollController);
               });
             });
@@ -81,16 +84,13 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
             Future.delayed(const Duration(milliseconds: 300)).then((value) {
               if(context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: redColor,
-                      content: const Text('Image is bigger than 10MB',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      duration: const Duration(seconds: 1),
-                    ));
+                  snackBar(
+                      context: context,
+                      title: 'Image is bigger than 10MB',
+                      isDarkTheme: isDarkTheme,
+                      duration: 1000,
+                      bgColor: redColor
+                  ));
               }
             });
 
@@ -100,15 +100,12 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
             Future.delayed(const Duration(milliseconds: 300)).then((value) {
               if(context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: redColor,
-                      content: Text(state.error.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      duration: const Duration(seconds: 2),
+                    snackBar(
+                      context: context,
+                      title: 'Error, please try again!',
+                      isDarkTheme: isDarkTheme,
+                      duration: 1000,
+                      bgColor: redColor,
                     ));
               }
             });
@@ -189,31 +186,63 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           isTitle: false,
                         ),
                        40.0.vrSpace,
-                        if(cubit.imagePaths.isNotEmpty) ...[
-                          FadeIn(
-                            duration: const Duration(milliseconds: 200),
-                            child: Text(
-                              '${cubit.imagePaths.length} / 5',
-                              style: const TextStyle(
-                                fontSize: 16.0,
-                                letterSpacing: 0.6,
-                              ),
-                            ),
-                          ),
-                          12.0.vrSpace,
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            clipBehavior: Clip.antiAlias,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 1,
-                              childAspectRatio: 1 / 0.85,
-                            ),
-                            itemBuilder: (context, index) => buildItemImagePicked(
-                                cubit, cubit.imagePaths[index], index, isDarkTheme, context),
-                            itemCount: cubit.imagePaths.length,
-                          ),
-                        ],
+                       Column(
+                         children: [
+                           if(cubit.imagePaths.isNotEmpty) ...[
+                             FadeIn(
+                               duration: const Duration(milliseconds: 200),
+                               child: Text(
+                                 '${cubit.imagePaths.length} / 5',
+                                 style: const TextStyle(
+                                   fontSize: 16.0,
+                                   letterSpacing: 0.6,
+                                 ),
+                               ),
+                             ),
+                             12.0.vrSpace,
+                             AnimatedSwitcher(
+                               duration: const Duration(milliseconds: 500),
+                               switchInCurve: Curves.easeInOut,
+                               switchOutCurve: Curves.easeInOut,
+                               transitionBuilder: (Widget child, Animation<double> animation) {
+                                 return FadeTransition(
+                                   opacity: animation,
+                                   child: SlideTransition(
+                                     position: Tween<Offset>(
+                                       begin: const Offset(0.0, 0.1), // from bottom slightly
+                                       end: Offset.zero,
+                                     ).animate(CurvedAnimation(
+                                       parent: animation,
+                                       curve: Curves.easeOutCubic,
+                                     )),
+                                     child: ScaleTransition(
+                                       scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                                           CurvedAnimation(
+                                         parent: animation,
+                                         curve: Curves.easeOut,
+                                       )),
+                                       child: child,
+                                     ),
+                                   ),
+                                 );
+                               },
+                               child: GridView.builder(
+                                 key: ValueKey<int>(cubit.imagePaths.length),
+                                 shrinkWrap: true,
+                                 physics: const NeverScrollableScrollPhysics(),
+                                 clipBehavior: Clip.antiAlias,
+                                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                   crossAxisCount: 1,
+                                   childAspectRatio: 1 / 0.85,
+                                 ),
+                                 itemBuilder: (context, index) => buildItemImagePicked(
+                                     cubit, cubit.imagePaths[index], index, isDarkTheme, context),
+                                 itemCount: cubit.imagePaths.length,
+                               ),
+                             ),
+                           ],
+                         ],
+                       ),
                       ],
                     ),
                   ),

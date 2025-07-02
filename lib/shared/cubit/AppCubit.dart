@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:notes/shared/components/Constants.dart';
 import 'package:notes/shared/cubit/AppStates.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -12,7 +11,7 @@ class AppCubit extends Cubit<AppStates> {
 
   AppCubit() : super(InitialAppState());
 
-  static AppCubit get(context) => BlocProvider.of(context);
+  static AppCubit get(BuildContext context) => BlocProvider.of(context);
 
 
   Database? dataBase;
@@ -24,7 +23,7 @@ class AppCubit extends Cubit<AppStates> {
   List<File> imagePaths = [];
 
 
-  void createDataBase(context) async {
+  void createDataBase(BuildContext context) async {
 
     openDatabase(
       'note.db',
@@ -142,7 +141,7 @@ class AppCubit extends Cubit<AppStates> {
   }
 
 
-  void clearImage(index) {
+  void clearImage(dynamic index) {
     imagePaths.removeAt(index);
     emit(SuccessClearAppState());
   }
@@ -183,7 +182,7 @@ class AppCubit extends Cubit<AppStates> {
 
   List<dynamic> dataImg = [];
 
-  void getImageNoteFromDataBase(id, dataBase) async {
+  void getImageNoteFromDataBase(dynamic id, dynamic dataBase) async {
 
     await dataBase?.rawQuery('SELECT * FROM Images WHERE id_note = ?',
         [id]).then((value) {
@@ -225,11 +224,11 @@ class AppCubit extends Cubit<AppStates> {
 
 
 
-  Map<int , dynamic> selectNotes = {};
-  Map<int , dynamic> selectNotesDeleted = {};
+  Map<dynamic, bool> selectNotes = {};
+  Map<dynamic, bool> selectNotesDeleted = {};
 
 
-  void getFromDataBase(dataBase, context) async {
+  void getFromDataBase(dynamic dataBase, BuildContext context) async {
 
     await dataBase?.rawQuery('SELECT * FROM Notes ORDER BY date_time DESC').then((value) {
 
@@ -283,7 +282,7 @@ class AppCubit extends Cubit<AppStates> {
   bool isSelected = false;
 
   void selectNote({
-    required id,
+    required dynamic id,
     bool isDeleted = false,
 }) {
 
@@ -301,7 +300,7 @@ class AppCubit extends Cubit<AppStates> {
 
 
   void cancelSelectNote({
-    required id,
+    required dynamic id,
     bool isDeleted = false,
 }) {
 
@@ -566,40 +565,6 @@ class AppCubit extends Cubit<AppStates> {
     isSearch = false;
     emit(SuccessClearAppState());
 
-  }
-
-
-  bool isArabicTitle = false;
-  bool isArabicContent = false;
-
-  void detectLangText(bool isTitle, String text) {
-
-    if(isTitle) {
-      if(englishRegex.hasMatch(text)) {
-        isArabicTitle = false;
-      } else if(arabicRegex.hasMatch(text)) {
-        isArabicTitle = true;
-      }
-
-    } else {
-
-      if(englishRegex.hasMatch(text)) {
-        isArabicContent = false;
-      } else if(arabicRegex.hasMatch(text)) {
-        isArabicContent = true;
-      }
-
-    }
-
-    emit(SuccessDetectLangTextAppState());
-  }
-
-
-  void clearDetectLang() {
-    isArabicTitle = false;
-    isArabicContent = false;
-
-    emit(SuccessClearAppState());
   }
 
 }
