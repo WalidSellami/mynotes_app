@@ -64,6 +64,7 @@ class _SearchNoteScreenState extends State<SearchNoteScreen> {
 
         if(state is SuccessUpdateIntoDataBaseAppState ||
             state is SuccessMoveToRecycleBinAppState ||
+            state is SuccessGetFromDataBaseAppState ||
             state is SuccessMoveAllSelectedNotesToRecycleBinAppState) {
             Navigator.pop(context);
             cubit.clearSearch();
@@ -153,6 +154,8 @@ class _SearchNoteScreenState extends State<SearchNoteScreen> {
                             EvaIcons.searchOutline,
                           ),
                           suffixIcon: searchController.text.isNotEmpty ? IconButton(
+                            tooltip: 'Clear',
+                            enableFeedback: true,
                             onPressed: () {
                               searchController.text = '';
                               cubit.clearSearch();

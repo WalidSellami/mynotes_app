@@ -8,7 +8,7 @@ Color darkBgColor = HexColor('0b1217');
 
 Color lightPrimaryColor = HexColor('197ffc'); //197ffc
 
-Color anotherPrimaryColor = HexColor('1c8de8');
+Color anotherDarkPrimaryColor = HexColor('1c8de8');
 
 Color darkPrimaryColor = HexColor('026ac7');   // 005eb2 , // 075ca8
 

@@ -45,6 +45,7 @@ dependencies:
   image_picker: ^1.0.4
   image_gallery_saver: ^2.0.3
   animate_do: ^4.2.0
+  animated_text_kit: ^4.2.3
 
   # PDF
   pdf: ^3.10.4

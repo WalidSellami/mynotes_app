@@ -120,7 +120,7 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
                       },
                       icon: Icon(
                         Icons.restore_rounded,
-                        color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
+                        color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
                         size: 30.0,
                       ),
                       tooltip: 'Restore',

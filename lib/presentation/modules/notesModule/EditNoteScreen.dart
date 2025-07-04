@@ -192,7 +192,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                         },
                         icon: Icon(
                           EvaIcons.imageOutline,
-                          color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
+                          color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
                           size: 30.0,
                         ),
                         enableFeedback: true,
@@ -340,8 +340,8 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
           || (cubit.imagePaths.isNotEmpty)) {
         cubit.updateIntoDataBase(
             id: widget.note['id'],
-            title: titleController.text,
-            content: contentController.text,
+            title: titleController.text.trim(),
+            content: contentController.text.trim(),
             date: DateFormat('dd MMM yyyy').format(DateTime.timestamp()).toString(),
             dateTime: DateTime.timestamp().toString(),
             isEmptyNote:((titleController.text == '' || titleController.text.trim().isEmpty)

@@ -135,9 +135,17 @@ Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
           },
           child: Card(
             clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              side: (note['status'] == 'Pinned') ?
+              BorderSide(
+                width: 1.0,
+                color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
+              ) : BorderSide.none,
+            ),
             elevation: isDarkTheme ? 12.0 : 5.0,
             surfaceTintColor: isDarkTheme
-                ? Theme.of(context).colorScheme.primary
+                ? darkPrimaryColor
                 : Colors.white,
             margin: const EdgeInsets.symmetric(
               horizontal: 14.0,
@@ -163,7 +171,59 @@ Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
                         ),
                       ),
                       40.0.hrSpace,
-                      if (!AppCubit.get(context).isSelected)
+                      if (!AppCubit.get(context).isSelected) ... [
+                        if(note['status'] == 'Pinned') ... [
+                          FadeIn(
+                            duration: const Duration(milliseconds: 200),
+                            child: Tooltip(
+                              message: 'Pin',
+                              enableFeedback: true,
+                              child: InkWell(
+                                onTap: () {
+                                  AppCubit.get(context).noteOptions(
+                                      id: note['id'], context: context, pinNote: false);
+                                },
+                                borderRadius: BorderRadius.circular(
+                                  14.0,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Icon(
+                                    Icons.push_pin_rounded,
+                                    size: 28.0,
+                                    color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ] else ... [
+                          FadeIn(
+                            duration: const Duration(milliseconds: 200),
+                            child: Tooltip(
+                              message: 'Pin',
+                              enableFeedback: true,
+                              child: InkWell(
+                                onTap: () {
+                                  AppCubit.get(context).noteOptions(
+                                      id: note['id'], context: context, pinNote: true);
+                                },
+                                borderRadius: BorderRadius.circular(
+                                  14.0,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Icon(
+                                    Icons.push_pin_outlined,
+                                    size: 28.0,
+                                    color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                        12.0.hrSpace,
                         FadeIn(
                           duration: const Duration(milliseconds: 200),
                           child: Tooltip(
@@ -188,6 +248,7 @@ Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
                             ),
                           ),
                         ),
+                      ],
                       if (selectNote[note['id']] &&
                           AppCubit.get(context).isSelected)
                         Padding(
@@ -196,7 +257,7 @@ Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
                             EvaIcons.checkmarkCircle2Outline,
                             size: 28.0,
                             color: isDarkTheme
-                                ? anotherPrimaryColor
+                                ? anotherDarkPrimaryColor
                                 : lightPrimaryColor,
                           ),
                         ),
@@ -208,7 +269,7 @@ Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
                             EvaIcons.radioButtonOffOutline,
                             size: 28.0,
                             color: isDarkTheme
-                                ? anotherPrimaryColor
+                                ? anotherDarkPrimaryColor
                                 : lightPrimaryColor,
                           ),
                         ),
@@ -219,6 +280,7 @@ Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
                     '${note['date']}',
                     style: TextStyle(
                       fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
                       color: isDarkTheme
                           ? Colors.grey.shade500
                           : Colors.grey.shade600,
@@ -232,7 +294,7 @@ Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
                         vertical: 4.0,
                       ),
                       child: Text(
-                        note['content'].toString().trim(),
+                        note['content'],
                         maxLines: 4,
                         style: const TextStyle(
                           fontSize: 15.0,
@@ -283,7 +345,7 @@ Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, c
             clipBehavior: Clip.antiAlias,
             elevation: isDarkTheme ? 12.0 : 5.0,
             surfaceTintColor: isDarkTheme
-                ? Theme.of(context).colorScheme.primary
+                ? darkPrimaryColor
                 : Colors.white,
             margin: const EdgeInsets.symmetric(
               horizontal: 14.0,
@@ -331,7 +393,7 @@ Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, c
                                       Icons.replay_sharp,
                                       size: 28.0,
                                       color: isDarkTheme
-                                          ? anotherPrimaryColor
+                                          ? anotherDarkPrimaryColor
                                           : lightPrimaryColor,
                                     ),
                                   ),
@@ -373,7 +435,7 @@ Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, c
                                 EvaIcons.checkmarkCircle2Outline,
                                 size: 28.0,
                                 color: isDarkTheme
-                                    ? anotherPrimaryColor
+                                    ? anotherDarkPrimaryColor
                                     : lightPrimaryColor,
                               ),
                             ),
@@ -385,7 +447,7 @@ Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, c
                                 EvaIcons.radioButtonOffOutline,
                                 size: 28.0,
                                 color: isDarkTheme
-                                    ? anotherPrimaryColor
+                                    ? anotherDarkPrimaryColor
                                     : lightPrimaryColor,
                               ),
                             ),
@@ -411,7 +473,7 @@ Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, c
                         vertical: 4.0,
                       ),
                       child: Text(
-                        note['content'].toString().trim(),
+                        note['content'],
                         maxLines: 4,
                         style: const TextStyle(
                           fontSize: 15.0,
@@ -819,7 +881,7 @@ dynamic showFullImageAndSave(
                     Icon(
                       EvaIcons.downloadOutline,
                       color:
-                          isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
+                          isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
                     ),
                     const SizedBox(
                       width: 8.0,

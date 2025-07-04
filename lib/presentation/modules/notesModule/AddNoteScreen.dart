@@ -152,7 +152,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                         },
                         icon: Icon(
                           EvaIcons.imageOutline,
-                          color: isDarkTheme ? anotherPrimaryColor : lightPrimaryColor,
+                          color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
                           size: 30.0,
                         ),
                       enableFeedback: true,
@@ -259,8 +259,8 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
      if((titleController.text.isNotEmpty && titleController.text.trim().isNotEmpty)
         || (contentController.text.isNotEmpty && contentController.text.trim().isNotEmpty)) {
       cubit.insertIntoDataBase(
-          title: titleController.text,
-          content: contentController.text,
+          title: titleController.text.trim(),
+          content: contentController.text.trim(),
           date: DateFormat('dd MMM yyyy').format(DateTime.timestamp()).toString(),
           dateTime: DateTime.timestamp().toString(),
           context: context,

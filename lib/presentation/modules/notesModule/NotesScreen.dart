@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
@@ -137,17 +138,22 @@ class _NotesScreenState extends State<NotesScreen> {
           },
           child: Scaffold(
             appBar: AppBar(
-              title: FadeIn(
-                duration: const Duration(milliseconds: 300),
-                child: Text(
-                  getGreeting(context),
-                  style: TextStyle(
-                    // fontFamily: 'Comfortaa',
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.6,
-                    fontSize: 21.0,
+              title: AnimatedTextKit(
+                key: ValueKey(isDarkTheme),
+                animatedTexts: [
+                  ColorizeAnimatedText(
+                    getGreeting(context),
+                    textStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    colors: [
+                      isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
+                      isDarkTheme ? Colors.white : Colors.black,
+                    ],
                   ),
-                ),
+                ],
+                isRepeatingAnimation: false,
               ),
               actions: [
                 if(!cubit.isSelected) ... [

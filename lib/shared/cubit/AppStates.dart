@@ -3,6 +3,8 @@ abstract class AppStates {}
 class InitialAppState extends AppStates {}
 
 
+
+// Create Database
 class SuccessCreateDataBaseAppState extends AppStates {}
 
 class ErrorCreateDataBaseAppState extends AppStates {
@@ -12,7 +14,7 @@ class ErrorCreateDataBaseAppState extends AppStates {
 }
 
 
-
+// Insert Into Database
 class SuccessInsertIntoDataBaseAppState extends AppStates {}
 
 class ErrorInsertIntoDataBaseAppState extends AppStates {
@@ -22,8 +24,7 @@ class ErrorInsertIntoDataBaseAppState extends AppStates {
 }
 
 
-
-
+// Get From Database
 class LoadingGetFromDataBaseAppState extends AppStates {}
 
 class SuccessGetFromDataBaseAppState extends AppStates {}
@@ -36,7 +37,7 @@ class ErrorGetFromDataBaseAppState extends AppStates {
 }
 
 
-
+// Update Into Database
 class SuccessUpdateIntoDataBaseAppState extends AppStates {
 
   final bool isEmptyNote;
@@ -50,7 +51,7 @@ class ErrorUpdateIntoDataBaseAppState extends AppStates {
 }
 
 
-
+// Delete From Database
 class SuccessDeleteFromDataBaseAppState extends AppStates {
 
   final bool isEmptyNote;
@@ -72,7 +73,6 @@ class ErrorDeleteNoteFromDataBaseAppState extends AppStates {
   ErrorDeleteNoteFromDataBaseAppState(this.error);
 }
 
-
 class SuccessDeleteAllNotesFromDataBaseAppState extends AppStates {}
 
 class ErrorDeleteAllNotesFromDataBaseAppState extends AppStates {
@@ -81,7 +81,16 @@ class ErrorDeleteAllNotesFromDataBaseAppState extends AppStates {
   ErrorDeleteAllNotesFromDataBaseAppState(this.error);
 }
 
+// Make Note Pinned
+class SuccessMakeNotePinnedAppState extends AppStates {}
 
+class ErrorMakeNotePinnedAppState extends AppStates {
+
+  dynamic error;
+  ErrorMakeNotePinnedAppState(this.error);
+}
+
+// Move To Recycle Bin
 class SuccessMoveToRecycleBinAppState extends AppStates {}
 
 class ErrorMoveToRecycleBinAppState extends AppStates {
@@ -90,7 +99,6 @@ class ErrorMoveToRecycleBinAppState extends AppStates {
   ErrorMoveToRecycleBinAppState(this.error);
 }
 
-
 class SuccessMoveSelectedNoteToRecycleBinAppState extends AppStates {}
 
 class ErrorMoveSelectedNoteToRecycleBinAppState extends AppStates {
@@ -98,7 +106,6 @@ class ErrorMoveSelectedNoteToRecycleBinAppState extends AppStates {
   dynamic error;
   ErrorMoveSelectedNoteToRecycleBinAppState(this.error);
 }
-
 
 class SuccessMoveAllSelectedNotesToRecycleBinAppState extends AppStates {}
 
@@ -109,6 +116,7 @@ class ErrorMoveAllSelectedNotesToRecycleBinAppState extends AppStates {
 }
 
 
+// Restore From Recycle Bin
 class SuccessRestoreFromRecycleBinAppState extends AppStates {}
 
 class ErrorRestoreFromRecycleBinAppState extends AppStates {
@@ -116,7 +124,6 @@ class ErrorRestoreFromRecycleBinAppState extends AppStates {
   dynamic error;
   ErrorRestoreFromRecycleBinAppState(this.error);
 }
-
 
 class SuccessRestoreNoteFromRecycleBinAppState extends AppStates {}
 
@@ -141,7 +148,6 @@ class SuccessDetectLangTextAppState extends AppStates {}
 
 
 // Image
-
 class SuccessGetImageAppState extends AppStates {}
 
 class ErrorGetImageAppState extends AppStates {

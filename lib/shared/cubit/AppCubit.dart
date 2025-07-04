@@ -234,6 +234,7 @@ class AppCubit extends Cubit<AppStates> {
 
       notes = [];
       notesDeleted = [];
+      bool isNotesPinned = false;
 
       for (var element in value) {
 
@@ -242,13 +243,15 @@ class AppCubit extends Cubit<AppStates> {
           deleteFromDataBase(id: element['id'], isEmptyNote: true);
         }
 
-        if(element['status'] == 'New') {
+        if(element['status'] == 'New' || element['status'] == 'Pinned') {
 
           notes.add(element);
 
           selectNotes.addAll({
             element['id']: false,
           });
+
+          if(element['status'] == 'Pinned') isNotesPinned = true;
 
         } else if(element['status'] == 'Deleted') {
 
@@ -259,6 +262,14 @@ class AppCubit extends Cubit<AppStates> {
           });
 
         }
+      }
+
+      if(isNotesPinned) {
+        notes.sort((a, b) {
+          return (b['status'] == 'Pinned' ? 1 : 0)
+              .compareTo(a['status'] == 'Pinned' ? 1 : 0);
+        });
+
       }
 
       if(imagePaths.isNotEmpty) clearAllImages();
@@ -376,6 +387,31 @@ class AppCubit extends Cubit<AppStates> {
   }
 
 
+  void noteOptions({
+    required int id,
+    required BuildContext context,
+    bool pinNote = false,
+  }) async {
+
+    await dataBase?.rawUpdate('UPDATE Notes SET status = ? WHERE id = ?',
+        [(pinNote) ? 'Pinned' : 'New', id]).then((value) {
+
+      if(context.mounted) {
+        getFromDataBase(dataBase, context);
+      }
+
+    }).catchError((error) {
+
+      if (kDebugMode) {
+        print('${error.toString()} --> in note options');
+      }
+
+      emit(ErrorMakeNotePinnedAppState(error));
+
+    });
+
+  }
+
 
   void moveToRecycleBin({
     required int id,
@@ -390,7 +426,7 @@ class AppCubit extends Cubit<AppStates> {
     }).catchError((error) {
 
       if (kDebugMode) {
-        print('${error.toString()} --> in update into database');
+        print('${error.toString()} --> in move to recycle bin');
       }
 
       emit(ErrorMoveToRecycleBinAppState(error));
