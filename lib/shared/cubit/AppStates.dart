@@ -81,13 +81,13 @@ class ErrorDeleteAllNotesFromDataBaseAppState extends AppStates {
   ErrorDeleteAllNotesFromDataBaseAppState(this.error);
 }
 
-// Make Note Pinned
-class SuccessMakeNotePinnedAppState extends AppStates {}
+// Pin Note
+class SuccessPinNoteAppState extends AppStates {}
 
-class ErrorMakeNotePinnedAppState extends AppStates {
+class ErrorPinNoteAppState extends AppStates {
 
   dynamic error;
-  ErrorMakeNotePinnedAppState(this.error);
+  ErrorPinNoteAppState(this.error);
 }
 
 // Move To Recycle Bin

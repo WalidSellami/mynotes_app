@@ -15,8 +15,8 @@ class AppCubit extends Cubit<AppStates> {
 
 
   Database? dataBase;
-  List<dynamic> notes = [];
-  List<dynamic> notesDeleted = [];
+  List<Map<String, dynamic>> notes = [];
+  List<Map<String, dynamic>> notesDeleted = [];
 
   var picker = ImagePicker();
 
@@ -115,12 +115,13 @@ class AppCubit extends Cubit<AppStates> {
 
       if(pickedFile != null) {
 
-        if(File(pickedFile.path).lengthSync() <= 10485760) {  //10mb
+        if(File(pickedFile.path).lengthSync() <= 10485760) {  // 10mb
 
           final appDir = await getApplicationDocumentsDirectory();
           final newPath = '${appDir.path}/${pickedFile.name}';
           final imageFile = await File(pickedFile.path).copy(newPath);
           imagePaths.add(imageFile);
+
 
           emit(SuccessGetImageAppState());
 
@@ -226,6 +227,7 @@ class AppCubit extends Cubit<AppStates> {
 
   Map<dynamic, bool> selectNotes = {};
   Map<dynamic, bool> selectNotesDeleted = {};
+  bool isNotesPinned = false;
 
 
   void getFromDataBase(dynamic dataBase, BuildContext context) async {
@@ -234,7 +236,7 @@ class AppCubit extends Cubit<AppStates> {
 
       notes = [];
       notesDeleted = [];
-      bool isNotesPinned = false;
+      isNotesPinned = false;
 
       for (var element in value) {
 
@@ -269,7 +271,6 @@ class AppCubit extends Cubit<AppStates> {
           return (b['status'] == 'Pinned' ? 1 : 0)
               .compareTo(a['status'] == 'Pinned' ? 1 : 0);
         });
-
       }
 
       if(imagePaths.isNotEmpty) clearAllImages();
@@ -387,7 +388,7 @@ class AppCubit extends Cubit<AppStates> {
   }
 
 
-  void noteOptions({
+  void pinNote({
     required int id,
     required BuildContext context,
     bool pinNote = false,
@@ -395,6 +396,8 @@ class AppCubit extends Cubit<AppStates> {
 
     await dataBase?.rawUpdate('UPDATE Notes SET status = ? WHERE id = ?',
         [(pinNote) ? 'Pinned' : 'New', id]).then((value) {
+
+      emit(SuccessPinNoteAppState());
 
       if(context.mounted) {
         getFromDataBase(dataBase, context);
@@ -406,7 +409,7 @@ class AppCubit extends Cubit<AppStates> {
         print('${error.toString()} --> in note options');
       }
 
-      emit(ErrorMakeNotePinnedAppState(error));
+      emit(ErrorPinNoteAppState(error));
 
     });
 

@@ -102,211 +102,196 @@ Route createThirdRoute({required dynamic screen}) {
 Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
     FadeIn(
       duration: const Duration(milliseconds: 500),
-      child: Dismissible(
-        key: UniqueKey(),
-        onDismissed: (direction) {
-          AppCubit.get(context)
-              .moveToRecycleBin(id: note['id'], context: context);
-        },
-        child: GestureDetector(
-          onTap: () {
-            if (!AppCubit.get(context).isSelected) {
-              AppCubit.get(context).getImageNoteFromDataBase(
-                  note['id'], AppCubit.get(context).dataBase);
-              Navigator.of(context).push(createSecondRoute(
-                  screen: EditNoteScreen(
-                note: note,
-              )));
+      child: GestureDetector(
+        onTap: () {
+          if (!AppCubit.get(context).isSelected) {
+            AppCubit.get(context).getImageNoteFromDataBase(
+                note['id'], AppCubit.get(context).dataBase);
+            Navigator.of(context).push(createSecondRoute(
+                screen: EditNoteScreen(
+              note: note,
+            )));
+          } else {
+            if (selectNote[note['id']]) {
+              AppCubit.get(context)
+                  .cancelSelectNote(id: note['id'], isDeleted: false);
             } else {
-              if (selectNote[note['id']]) {
-                AppCubit.get(context)
-                    .cancelSelectNote(id: note['id'], isDeleted: false);
-              } else {
-                AppCubit.get(context)
-                    .selectNote(id: note['id'], isDeleted: false);
-              }
+              AppCubit.get(context)
+                  .selectNote(id: note['id'], isDeleted: false);
             }
-          },
-          onLongPress: () {
-            if (!selectNote[note['id']] && !AppCubit.get(context).isSelected) {
-              HapticFeedback.vibrate();
-              AppCubit.get(context).selectNote(id: note['id']);
-            }
-          },
-          child: Card(
-            clipBehavior: Clip.antiAlias,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              side: (note['status'] == 'Pinned') ?
-              BorderSide(
-                width: 1.0,
-                color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
-              ) : BorderSide.none,
-            ),
-            elevation: isDarkTheme ? 12.0 : 5.0,
-            surfaceTintColor: isDarkTheme
-                ? darkPrimaryColor
-                : Colors.white,
-            margin: const EdgeInsets.symmetric(
-              horizontal: 14.0,
-              vertical: 12.0,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '${note['title']}',
-                          maxLines: 1,
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            overflow: TextOverflow.ellipsis,
-                            letterSpacing: 0.6,
-                            fontWeight: FontWeight.bold,
-                          ),
+          }
+        },
+        onLongPress: () {
+          if (!selectNote[note['id']] && !AppCubit.get(context).isSelected) {
+            HapticFeedback.vibrate();
+            AppCubit.get(context).selectNote(id: note['id']);
+          }
+        },
+        child: Card(
+          key: ValueKey<int>(note['id']),
+          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            side: (note['status'] == 'Pinned') ?
+            BorderSide(
+              width: 1.0,
+              color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
+            ) : BorderSide.none,
+          ),
+          elevation: isDarkTheme ? 12.0 : 5.0,
+          surfaceTintColor: isDarkTheme
+              ? darkPrimaryColor
+              : Colors.white,
+          margin: const EdgeInsets.symmetric(
+            horizontal: 14.0,
+            vertical: 12.0,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${note['title']}',
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                          overflow: TextOverflow.ellipsis,
+                          letterSpacing: 0.6,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      40.0.hrSpace,
-                      if (!AppCubit.get(context).isSelected) ... [
-                        if(note['status'] == 'Pinned') ... [
-                          FadeIn(
-                            duration: const Duration(milliseconds: 200),
-                            child: Tooltip(
-                              message: 'Pin',
-                              enableFeedback: true,
-                              child: InkWell(
-                                onTap: () {
-                                  AppCubit.get(context).noteOptions(
-                                      id: note['id'], context: context, pinNote: false);
-                                },
-                                borderRadius: BorderRadius.circular(
-                                  14.0,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Icon(
-                                    Icons.push_pin_rounded,
-                                    size: 28.0,
-                                    color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
-                                  ),
-                                ),
+                    ),
+                    40.0.hrSpace,
+                    if (!AppCubit.get(context).isSelected) ... [
+                      if(note['status'] == 'Pinned') ... [
+                        Tooltip(
+                          message: 'Pin',
+                          enableFeedback: true,
+                          child: InkWell(
+                            onTap: () {
+                              AppCubit.get(context).pinNote(
+                                  id: note['id'], context: context, pinNote: false);
+                            },
+                            borderRadius: BorderRadius.circular(
+                              50.0,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Icon(
+                                Icons.push_pin_rounded,
+                                size: 28.0,
+                                color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
                               ),
                             ),
                           ),
-                        ] else ... [
-                          FadeIn(
-                            duration: const Duration(milliseconds: 200),
-                            child: Tooltip(
-                              message: 'Pin',
-                              enableFeedback: true,
-                              child: InkWell(
-                                onTap: () {
-                                  AppCubit.get(context).noteOptions(
-                                      id: note['id'], context: context, pinNote: true);
-                                },
-                                borderRadius: BorderRadius.circular(
-                                  14.0,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Icon(
-                                    Icons.push_pin_outlined,
-                                    size: 28.0,
-                                    color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
-                                  ),
-                                ),
-                              ),
+                        ),
+                      ] else ... [
+                        Tooltip(
+                          message: 'Pin',
+                          enableFeedback: true,
+                          child: InkWell(
+                            onTap: () {
+                              AppCubit.get(context).pinNote(
+                                  id: note['id'], context: context, pinNote: true);
+                            },
+                            borderRadius: BorderRadius.circular(
+                              50.0,
                             ),
-                          ),
-                        ],
-                        12.0.hrSpace,
-                        FadeIn(
-                          duration: const Duration(milliseconds: 200),
-                          child: Tooltip(
-                            message: 'Remove',
-                            enableFeedback: true,
-                            child: InkWell(
-                              onTap: () {
-                                AppCubit.get(context).moveToRecycleBin(
-                                    id: note['id'], context: context);
-                              },
-                              borderRadius: BorderRadius.circular(
-                                14.0,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Icon(
-                                  Icons.close_rounded,
-                                  size: 28.0,
-                                  color: redColor,
-                                ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Icon(
+                                Icons.push_pin_outlined,
+                                size: 28.0,
+                                color: isDarkTheme ? anotherDarkPrimaryColor : lightPrimaryColor,
                               ),
                             ),
                           ),
                         ),
                       ],
-                      if (selectNote[note['id']] &&
-                          AppCubit.get(context).isSelected)
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Icon(
-                            EvaIcons.checkmarkCircle2Outline,
-                            size: 28.0,
-                            color: isDarkTheme
-                                ? anotherDarkPrimaryColor
-                                : lightPrimaryColor,
-                          ),
-                        ),
-                      if (!selectNote[note['id']] &&
-                          AppCubit.get(context).isSelected)
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Icon(
-                            EvaIcons.radioButtonOffOutline,
-                            size: 28.0,
-                            color: isDarkTheme
-                                ? anotherDarkPrimaryColor
-                                : lightPrimaryColor,
+                      12.0.hrSpace,
+                      Tooltip(
+                          message: 'Remove',
+                          enableFeedback: true,
+                          child: InkWell(
+                            onTap: () {
+                              AppCubit.get(context).moveToRecycleBin(
+                                  id: note['id'], context: context);
+                            },
+                            borderRadius: BorderRadius.circular(
+                              50.0,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Icon(
+                                Icons.close_rounded,
+                                size: 28.0,
+                                color: redColor,
+                              ),
+                            ),
                           ),
                         ),
                     ],
-                  ),
-                  if (note['title'] != '') 6.0.vrSpace,
-                  Text(
-                    '${note['date']}',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold,
-                      color: isDarkTheme
-                          ? Colors.grey.shade500
-                          : Colors.grey.shade600,
-                    ),
-                  ),
-                  if (note['content'] != '') ...[
-                    14.0.vrSpace,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 4.0,
-                      ),
-                      child: Text(
-                        note['content'],
-                        maxLines: 4,
-                        style: const TextStyle(
-                          fontSize: 15.0,
-                          letterSpacing: 0.6,
-                          height: 1.8,
-                          overflow: TextOverflow.ellipsis,
+                    if (selectNote[note['id']] &&
+                        AppCubit.get(context).isSelected)
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Icon(
+                          EvaIcons.checkmarkCircle2Outline,
+                          size: 28.0,
+                          color: isDarkTheme
+                              ? anotherDarkPrimaryColor
+                              : lightPrimaryColor,
                         ),
                       ),
-                    ),
+                    if (!selectNote[note['id']] &&
+                        AppCubit.get(context).isSelected)
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Icon(
+                          EvaIcons.radioButtonOffOutline,
+                          size: 28.0,
+                          color: isDarkTheme
+                              ? anotherDarkPrimaryColor
+                              : lightPrimaryColor,
+                        ),
+                      ),
                   ],
+                ),
+                if (note['title'] != '') 6.0.vrSpace,
+                Text(
+                  '${note['date']}',
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                    color: isDarkTheme
+                        ? Colors.grey.shade500
+                        : Colors.grey.shade600,
+                  ),
+                ),
+                if (note['content'] != '') ...[
+                  14.0.vrSpace,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 4.0,
+                    ),
+                    child: Text(
+                      note['content'],
+                      maxLines: 4,
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        letterSpacing: 0.6,
+                        height: 1.8,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),
@@ -317,175 +302,164 @@ Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
 Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, context) =>
     FadeInLeft(
       duration: const Duration(milliseconds: 500),
-      child: Dismissible(
-        key: UniqueKey(),
-        onDismissed: (direction) {
-          AppCubit.get(context).deleteFromDataBase(id: note['id']);
+      child: GestureDetector(
+        onTap: () {
+          if (AppCubit.get(context).isSelected) {
+            if (selectNoteDeleted[note['id']]) {
+              AppCubit.get(context)
+                  .cancelSelectNote(id: note['id'], isDeleted: true);
+            } else {
+              AppCubit.get(context)
+                  .selectNote(id: note['id'], isDeleted: true);
+            }
+          }
         },
-        child: GestureDetector(
-          onTap: () {
-            if (AppCubit.get(context).isSelected) {
-              if (selectNoteDeleted[note['id']]) {
-                AppCubit.get(context)
-                    .cancelSelectNote(id: note['id'], isDeleted: true);
-              } else {
-                AppCubit.get(context)
-                    .selectNote(id: note['id'], isDeleted: true);
-              }
-            }
-          },
-          onLongPress: () {
-            if (!selectNoteDeleted[note['id']] &&
-                !AppCubit.get(context).isSelected) {
-              HapticFeedback.vibrate();
-              AppCubit.get(context).selectNote(id: note['id'], isDeleted: true);
-            }
-          },
-          child: Card(
-            clipBehavior: Clip.antiAlias,
-            elevation: isDarkTheme ? 12.0 : 5.0,
-            surfaceTintColor: isDarkTheme
-                ? darkPrimaryColor
-                : Colors.white,
-            margin: const EdgeInsets.symmetric(
-              horizontal: 14.0,
-              vertical: 12.0,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '${note['title']}',
-                          maxLines: 1,
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            overflow: TextOverflow.ellipsis,
-                            letterSpacing: 0.6,
-                            fontWeight: FontWeight.bold,
-                          ),
+        onLongPress: () {
+          if (!selectNoteDeleted[note['id']] &&
+              !AppCubit.get(context).isSelected) {
+            HapticFeedback.vibrate();
+            AppCubit.get(context).selectNote(id: note['id'], isDeleted: true);
+          }
+        },
+        child: Card(
+          key: ValueKey<int>(note['id']),
+          clipBehavior: Clip.antiAlias,
+          elevation: isDarkTheme ? 12.0 : 5.0,
+          surfaceTintColor: isDarkTheme
+              ? darkPrimaryColor
+              : Colors.white,
+          margin: const EdgeInsets.symmetric(
+            horizontal: 14.0,
+            vertical: 12.0,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${note['title']}',
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                          overflow: TextOverflow.ellipsis,
+                          letterSpacing: 0.6,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      40.0.hrSpace,
-                      Row(
-                        children: [
-                          if (!AppCubit.get(context).isSelected)
-                            FadeIn(
-                              duration: const Duration(milliseconds: 200),
-                              child: Tooltip(
-                                message: 'Restore',
-                                enableFeedback: true,
-                                child: InkWell(
-                                  onTap: () {
-                                    AppCubit.get(context).restoreFromRecycleBin(
-                                        id: note['id'], context: context);
-                                  },
-                                  borderRadius: BorderRadius.circular(
-                                    14.0,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Icon(
-                                      Icons.replay_sharp,
-                                      size: 28.0,
-                                      color: isDarkTheme
-                                          ? anotherDarkPrimaryColor
-                                          : lightPrimaryColor,
-                                    ),
-                                  ),
+                    ),
+                    40.0.hrSpace,
+                    Row(
+                      children: [
+                        if (!AppCubit.get(context).isSelected)
+                          Tooltip(
+                            message: 'Restore',
+                            enableFeedback: true,
+                            child: InkWell(
+                              onTap: () {
+                                AppCubit.get(context).restoreFromRecycleBin(
+                                    id: note['id'], context: context);
+                              },
+                              borderRadius: BorderRadius.circular(
+                                50.0,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Icon(
+                                  Icons.replay_sharp,
+                                  size: 28.0,
+                                  color: isDarkTheme
+                                      ? anotherDarkPrimaryColor
+                                      : lightPrimaryColor,
                                 ),
                               ),
                             ),
-                          if (!AppCubit.get(context).isSelected) ...[
-                            4.0.hrSpace,
-                            FadeIn(
-                              duration: const Duration(milliseconds: 200),
-                              child: Tooltip(
-                                message: 'Remove',
-                                enableFeedback: true,
-                                child: InkWell(
-                                  onTap: () {
-                                    AppCubit.get(context)
-                                        .deleteFromDataBase(id: note['id']);
-                                  },
-                                  borderRadius: BorderRadius.circular(
-                                    14.0,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Icon(
-                                      Icons.close_rounded,
-                                      size: 28.0,
-                                      color: redColor,
-                                    ),
+                          ),
+                        if (!AppCubit.get(context).isSelected) ...[
+                          4.0.hrSpace,
+                          Tooltip(
+                              message: 'Remove',
+                              enableFeedback: true,
+                              child: InkWell(
+                                onTap: () {
+                                  AppCubit.get(context)
+                                      .deleteFromDataBase(id: note['id']);
+                                },
+                                borderRadius: BorderRadius.circular(
+                                  50.0,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Icon(
+                                    Icons.close_rounded,
+                                    size: 28.0,
+                                    color: redColor,
                                   ),
                                 ),
-                              ),
-                            ),
-                          ],
-                          if (selectNoteDeleted[note['id']] &&
-                              AppCubit.get(context).isSelected)
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Icon(
-                                EvaIcons.checkmarkCircle2Outline,
-                                size: 28.0,
-                                color: isDarkTheme
-                                    ? anotherDarkPrimaryColor
-                                    : lightPrimaryColor,
-                              ),
-                            ),
-                          if (!selectNoteDeleted[note['id']] &&
-                              AppCubit.get(context).isSelected)
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Icon(
-                                EvaIcons.radioButtonOffOutline,
-                                size: 28.0,
-                                color: isDarkTheme
-                                    ? anotherDarkPrimaryColor
-                                    : lightPrimaryColor,
                               ),
                             ),
                         ],
-                      ),
-                    ],
-                  ),
-                  if (note['title'] != '') 6.0.vrSpace,
-                  Text(
-                    '${note['date']}',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: isDarkTheme
-                          ? Colors.grey.shade500
-                          : Colors.grey.shade600,
-                    ),
-                  ),
-                  if (note['content'] != '') ...[
-                    14.0.vrSpace,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 4.0,
-                      ),
-                      child: Text(
-                        note['content'],
-                        maxLines: 4,
-                        style: const TextStyle(
-                          fontSize: 15.0,
-                          letterSpacing: 0.6,
-                          height: 1.8,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
+                        if (selectNoteDeleted[note['id']] &&
+                            AppCubit.get(context).isSelected)
+                          Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Icon(
+                              EvaIcons.checkmarkCircle2Outline,
+                              size: 28.0,
+                              color: isDarkTheme
+                                  ? anotherDarkPrimaryColor
+                                  : lightPrimaryColor,
+                            ),
+                          ),
+                        if (!selectNoteDeleted[note['id']] &&
+                            AppCubit.get(context).isSelected)
+                          Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Icon(
+                              EvaIcons.radioButtonOffOutline,
+                              size: 28.0,
+                              color: isDarkTheme
+                                  ? anotherDarkPrimaryColor
+                                  : lightPrimaryColor,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
+                ),
+                if (note['title'] != '') 6.0.vrSpace,
+                Text(
+                  '${note['date']}',
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    color: isDarkTheme
+                        ? Colors.grey.shade500
+                        : Colors.grey.shade600,
+                  ),
+                ),
+                if (note['content'] != '') ...[
+                  14.0.vrSpace,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 4.0,
+                    ),
+                    child: Text(
+                      note['content'],
+                      maxLines: 4,
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        letterSpacing: 0.6,
+                        height: 1.8,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),

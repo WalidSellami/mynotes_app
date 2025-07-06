@@ -46,6 +46,7 @@ dependencies:
   image_gallery_saver: ^2.0.3
   animate_do: ^4.2.0
   animated_text_kit: ^4.2.3
+  animated_list_plus: ^0.5.2
 
   # PDF
   pdf: ^3.10.4
@@ -86,8 +87,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/note.png
-    - assets/fonts/VarelaRound-Regular.ttf
-    - assets/fonts/IBMPlexSansArabic-Regular.ttf
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,4 +1,6 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:animated_list_plus/animated_list_plus.dart';
+import 'package:animated_list_plus/transitions.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -80,7 +82,6 @@ class _NotesScreenState extends State<NotesScreen> {
             }
           });
 
-
         }
 
 
@@ -93,7 +94,7 @@ class _NotesScreenState extends State<NotesScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                   snackBar(
                     context: context,
-                    title: 'All Notes Selected Moved To Recycle Bin',
+                    title: 'All Selected Notes Moved To Recycle Bin',
                     isDarkTheme: isDarkTheme,
                     duration: 1000,
                   ));
@@ -216,12 +217,20 @@ class _NotesScreenState extends State<NotesScreen> {
                   }
                   return true;
                 },
-                child: ListView.separated(
+                child: ImplicitlyAnimatedList<Map<String, dynamic>>(
+                  items: cubit.notes,
+                  areItemsTheSame: (oldItem, newItem) => oldItem['id'] == newItem['id'],
+                  itemBuilder: (context, animation, note, index) {
+                    return SizeFadeTransition(
+                      sizeFraction: 0.7,
+                      curve: Curves.easeInOut,
+                      animation: animation,
+                      child: buildItemNote(note, cubit.selectNotes, isDarkTheme, context),
+                    );
+                  },
+                  separatorBuilder: (context, index) => 4.0.vrSpace,
                   physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context , index) => buildItemNote(cubit.notes[index],
-                      cubit.selectNotes, isDarkTheme, context),
-                  separatorBuilder: (context , index) => 8.0.vrSpace,
-                  itemCount: cubit.notes.length,
+                  clipBehavior: Clip.antiAlias,
                 ),
               ),
               fallback: (context) => Center(

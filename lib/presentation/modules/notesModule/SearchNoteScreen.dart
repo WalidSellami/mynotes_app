@@ -64,7 +64,7 @@ class _SearchNoteScreenState extends State<SearchNoteScreen> {
 
         if(state is SuccessUpdateIntoDataBaseAppState ||
             state is SuccessMoveToRecycleBinAppState ||
-            state is SuccessGetFromDataBaseAppState ||
+            state is SuccessPinNoteAppState ||
             state is SuccessMoveAllSelectedNotesToRecycleBinAppState) {
             Navigator.pop(context);
             cubit.clearSearch();
@@ -81,7 +81,6 @@ class _SearchNoteScreenState extends State<SearchNoteScreen> {
             if(cubit.isSelected) {
               cubit.cancelAll();
             }
-            cubit.clearSearch();
           },
           child: GestureDetector(
             onVerticalDragEnd: (details) {
@@ -105,7 +104,7 @@ class _SearchNoteScreenState extends State<SearchNoteScreen> {
                 title: 'Search Note',
                 actions: [
                   if(cubit.isSelected && cubit.selectNotes.values.any((element) => element == true))
-                    FadeInRight(
+                    FadeIn(
                       duration: const Duration(milliseconds: 300),
                       child: IconButton(
                         onPressed: () {
@@ -132,6 +131,7 @@ class _SearchNoteScreenState extends State<SearchNoteScreen> {
                         controller: searchController,
                         focusNode: focusNode,
                         keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.sentences,
                         style: const TextStyle(
                           letterSpacing: 0.6,
                           fontWeight: FontWeight.bold,
@@ -185,6 +185,7 @@ class _SearchNoteScreenState extends State<SearchNoteScreen> {
                       child: ConditionalBuilder(
                         condition: cubit.searchNotes.isNotEmpty,
                         builder: (context) => ListView.separated(
+                          clipBehavior: Clip.antiAlias,
                           physics: const BouncingScrollPhysics(),
                           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                           itemBuilder: (context , index) => buildItemNote(cubit.searchNotes[index], cubit.selectNotes,

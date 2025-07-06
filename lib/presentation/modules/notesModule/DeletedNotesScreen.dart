@@ -1,4 +1,6 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:animated_list_plus/animated_list_plus.dart';
+import 'package:animated_list_plus/transitions.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -146,13 +148,21 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
             ),
             body: ConditionalBuilder(
               condition: cubit.notesDeleted.isNotEmpty,
-              builder: (context) => ListView.separated(
+              builder: (context) => ImplicitlyAnimatedList<Map<String, dynamic>>(
+                items: cubit.notesDeleted,
+                areItemsTheSame: (oldItem, newItem) => oldItem['id'] == newItem['id'],
+                itemBuilder: (context, animation, noteDeleted, index) {
+                  return SizeFadeTransition(
+                    sizeFraction: 0.7,
+                    curve: Curves.easeInOut,
+                    animation: animation,
+                    child: buildItemNoteDeleted(noteDeleted, cubit.selectNotesDeleted,
+                        isDarkTheme, context),
+                  );
+                },
+                separatorBuilder: (context, index) => 4.0.vrSpace,
                 physics: const BouncingScrollPhysics(),
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                itemBuilder: (context , index) => buildItemNoteDeleted(cubit.notesDeleted[index], cubit.selectNotesDeleted,
-                    isDarkTheme, context),
-                separatorBuilder: (context , index) => 8.0.vrSpace,
-                itemCount: cubit.notesDeleted.length,
+                clipBehavior: Clip.antiAlias,
               ),
               fallback: (context) => Center(
                 child: FadeInLeft(
