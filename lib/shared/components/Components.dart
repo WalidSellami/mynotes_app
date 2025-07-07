@@ -299,13 +299,13 @@ Widget buildItemNote(Map note, Map selectNote, bool isDarkTheme, context) =>
     );
 
 
-Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, context) =>
+Widget buildItemDeletedNote(Map note, Map selectDeletedNote, bool isDarkTheme, context) =>
     FadeInLeft(
       duration: const Duration(milliseconds: 500),
       child: GestureDetector(
         onTap: () {
           if (AppCubit.get(context).isSelected) {
-            if (selectNoteDeleted[note['id']]) {
+            if (selectDeletedNote[note['id']]) {
               AppCubit.get(context)
                   .cancelSelectNote(id: note['id'], isDeleted: true);
             } else {
@@ -315,7 +315,7 @@ Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, c
           }
         },
         onLongPress: () {
-          if (!selectNoteDeleted[note['id']] &&
+          if (!selectDeletedNote[note['id']] &&
               !AppCubit.get(context).isSelected) {
             HapticFeedback.vibrate();
             AppCubit.get(context).selectNote(id: note['id'], isDeleted: true);
@@ -402,7 +402,7 @@ Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, c
                               ),
                             ),
                         ],
-                        if (selectNoteDeleted[note['id']] &&
+                        if (selectDeletedNote[note['id']] &&
                             AppCubit.get(context).isSelected)
                           Padding(
                             padding: const EdgeInsets.all(6.0),
@@ -414,7 +414,7 @@ Widget buildItemNoteDeleted(Map note, Map selectNoteDeleted, bool isDarkTheme, c
                                   : lightPrimaryColor,
                             ),
                           ),
-                        if (!selectNoteDeleted[note['id']] &&
+                        if (!selectDeletedNote[note['id']] &&
                             AppCubit.get(context).isSelected)
                           Padding(
                             padding: const EdgeInsets.all(6.0),

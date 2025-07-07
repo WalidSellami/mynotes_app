@@ -36,7 +36,7 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
           cubit.getFromDataBase(cubit.dataBase, context);
 
           Future.delayed(const Duration(milliseconds: 200)).then((value) {
-            if(cubit.isSelected && cubit.notesDeleted.isEmpty) {
+            if(cubit.isSelected && cubit.deletedNotes.isEmpty) {
               cubit.cancelAll(isDeleted: true);
             }
           });
@@ -67,7 +67,7 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
           cubit.getFromDataBase(cubit.dataBase, context);
 
           Future.delayed(const Duration(milliseconds: 200)).then((value) {
-            if(cubit.isSelected && cubit.notesDeleted.isEmpty) {
+            if(cubit.isSelected && cubit.deletedNotes.isEmpty) {
               cubit.cancelAll(isDeleted: true);
             }
           });
@@ -88,7 +88,7 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             snackBar(
               context: context,
-              title: 'All Notes Deleted',
+              title: 'All Selected Notes Deleted',
               isDarkTheme: isDarkTheme,
             ));
         }
@@ -111,14 +111,14 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
               },
               title: 'Recycle Bin',
               actions: [
-                if(cubit.isSelected && cubit.selectNotesDeleted.
+                if(cubit.isSelected && cubit.selectDeletedNotes.
                 values.any((element) => (element == true))) ...[
                   FadeIn(
                     duration: const Duration(milliseconds: 300),
                     child: IconButton(
                       onPressed: () {
                         AppCubit.get(context).restoreAllNotesFromRecycleBin(
-                            selectNotesDel: cubit.selectNotesDeleted, context: context);
+                            selectNotesDel: cubit.selectDeletedNotes, context: context);
                       },
                       icon: Icon(
                         Icons.restore_rounded,
@@ -132,7 +132,7 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
                     duration: const Duration(milliseconds: 300),
                     child: IconButton(
                       onPressed: () {
-                        AppCubit.get(context).deleteAllNotesFromDataBase(selectNotesDel: cubit.selectNotesDeleted);
+                        AppCubit.get(context).deleteAllNotesFromDataBase(selectNotesDel: cubit.selectDeletedNotes);
                       },
                       icon: Icon(
                         Icons.close_rounded,
@@ -147,16 +147,16 @@ class _DeletedNotesScreenState extends State<DeletedNotesScreen> {
               ],
             ),
             body: ConditionalBuilder(
-              condition: cubit.notesDeleted.isNotEmpty,
+              condition: cubit.deletedNotes.isNotEmpty,
               builder: (context) => ImplicitlyAnimatedList<Map<String, dynamic>>(
-                items: cubit.notesDeleted,
+                items: cubit.deletedNotes,
                 areItemsTheSame: (oldItem, newItem) => oldItem['id'] == newItem['id'],
                 itemBuilder: (context, animation, noteDeleted, index) {
                   return SizeFadeTransition(
                     sizeFraction: 0.7,
                     curve: Curves.easeInOut,
                     animation: animation,
-                    child: buildItemNoteDeleted(noteDeleted, cubit.selectNotesDeleted,
+                    child: buildItemDeletedNote(noteDeleted, cubit.selectDeletedNotes,
                         isDarkTheme, context),
                   );
                 },

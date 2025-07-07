@@ -16,7 +16,7 @@ class AppCubit extends Cubit<AppStates> {
 
   Database? dataBase;
   List<Map<String, dynamic>> notes = [];
-  List<Map<String, dynamic>> notesDeleted = [];
+  List<Map<String, dynamic>> deletedNotes = [];
 
   var picker = ImagePicker();
 
@@ -226,7 +226,7 @@ class AppCubit extends Cubit<AppStates> {
 
 
   Map<dynamic, bool> selectNotes = {};
-  Map<dynamic, bool> selectNotesDeleted = {};
+  Map<dynamic, bool> selectDeletedNotes = {};
   bool isNotesPinned = false;
 
 
@@ -235,7 +235,7 @@ class AppCubit extends Cubit<AppStates> {
     await dataBase?.rawQuery('SELECT * FROM Notes ORDER BY date_time DESC').then((value) {
 
       notes = [];
-      notesDeleted = [];
+      deletedNotes = [];
       isNotesPinned = false;
 
       for (var element in value) {
@@ -257,9 +257,9 @@ class AppCubit extends Cubit<AppStates> {
 
         } else if(element['status'] == 'Deleted') {
 
-          notesDeleted.add(element);
+          deletedNotes.add(element);
 
-          selectNotesDeleted.addAll({
+          selectDeletedNotes.addAll({
             element['id']: false,
           });
 
@@ -303,7 +303,7 @@ class AppCubit extends Cubit<AppStates> {
     if(!isDeleted) {
       selectNotes[id] = true;
     } else {
-      selectNotesDeleted[id] = true;
+      selectDeletedNotes[id] = true;
     }
 
     emit(SuccessSelectNoteAppState());
@@ -319,7 +319,7 @@ class AppCubit extends Cubit<AppStates> {
     if(!isDeleted) {
       selectNotes[id] = false;
     } else {
-      selectNotesDeleted[id] = false;
+      selectDeletedNotes[id] = false;
     }
 
     emit(SuccessCancelSelectNoteAppState());
@@ -341,8 +341,8 @@ class AppCubit extends Cubit<AppStates> {
 
     } else {
 
-      for(var element in selectNotesDeleted.keys) {
-        selectNotesDeleted[element] = false;
+      for(var element in selectDeletedNotes.keys) {
+        selectDeletedNotes[element] = false;
       }
 
     }
